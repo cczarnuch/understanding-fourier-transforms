@@ -1,20 +1,19 @@
 import Browser
-import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
+-- import Html exposing (Html, button, div, text)
+-- import Html.Events exposing (onClick)
 
--- module App exposing (..)
--- import GraphicSVG exposing (..)
--- import GraphicSVG.EllieApp exposing (..)
+import GraphicSVG exposing (..)
+import GraphicSVG.EllieApp exposing (..)
 
 
--- main =
---     gameApp Tick
---         { model = init
---         , view = view
---         , update = update
---         , title = "Understanding Fourier Transforms"
---         }
-main = Browser.sandbox {init = init, update = update, view = view}
+main =
+    gameApp Tick
+        { model = init
+        , view = view
+        , update = update
+        , title = "Understanding Fourier Transforms"
+        }
+
 
 type FTrnsfms
     = Type1
@@ -43,7 +42,8 @@ init =
 
 
 type Msg
-    = Add1Up
+    = Tick Float GetKeyState
+    | Add1Up
     | Add1Dn
     | Coeff1Up
     | Coeff1Dn
@@ -55,20 +55,29 @@ type Msg
     | InPulse
 
 
--- view model =
---     collage 192 128 (myShapes model)
---
---myShapes model = []
-view model =
-    div []
-    [ button [onClick Add1Up] [text "+"], button [onClick Coeff1Up] [text "+"]
-    , div [] [text (String.fromInt model.addition1), text "\t", text (String.fromInt model.coefficient1)]
-    , button [onClick Add1Dn] [text "-"], button [onClick Coeff1Dn] [text "-"]
+myShapes model = [
+    roundedRect 40 25 5
+        |> filled darkGray
+        |> move (0,60)
+        |> notifyTap Add1Up,
+    roundedRect 40 25 5
+        |> filled darkGray
+        |> move (0,20)
+        |> notifyTap Add1Dn,
+    text ("" ++ String.fromInt model.addition1)
+        |> filled black
+        |> move (0, 35)
     ]
+
+
+view model =
+    collage 512 380 (myShapes model)
 
 
 update msg model =
     case msg of
+        Tick f g ->
+            model
         Add1Up ->
             { model
                 | addition1 =
@@ -134,4 +143,3 @@ update msg model =
             { model
                 | input = Pulse
             }
-
