@@ -45,6 +45,8 @@ type Msg
     = Tick Float GetKeyState
     | Add1Up
     | Add1Dn
+    | Add2Up
+    | Add2Dn
     | Coeff1Up
     | Coeff1Dn
     | Trnsfm1
@@ -56,17 +58,10 @@ type Msg
 
 
 myShapes model = [
-    roundedRect 40 25 5
-        |> filled darkGray
-        |> move (0,60)
-        |> notifyTap Add1Up,
-    roundedRect 40 25 5
-        |> filled darkGray
-        |> move (0,20)
-        |> notifyTap Add1Dn,
-    text ("" ++ String.fromInt model.addition1)
-        |> filled black
-        |> move (0, 35)
+    arrows model.addition1 Add1Up Add1Dn
+        |> move (-20,0),
+    arrows model.addition2 Add2Up Add2Dn
+        |> move (20,0)
     ]
 
 
@@ -94,6 +89,24 @@ update msg model =
                         model.addition1 - 1
                     else
                         model.addition1
+            }
+
+        Add2Up ->
+            { model
+                | addition2 =
+                    if model.addition2 < model.maxAddition2 then
+                        model.addition2 + 1
+                    else
+                        model.addition2
+            }
+
+        Add2Dn ->
+            { model
+                | addition2 =
+                    if model.addition2 > -model.maxAddition2 then
+                        model.addition2 - 1
+                    else
+                        model.addition2
             }
 
         Coeff1Up ->
@@ -143,3 +156,18 @@ update msg model =
             { model
                 | input = Pulse
             }
+
+
+arrows display up down = group[
+            polygon [(-10,0),(0,20),(10,0)]
+                |> filled darkGray
+                |> move (0,20)
+                |> notifyTap up,
+            polygon [(-10,0),(0,-20),(10,0)]
+                |> filled darkGray
+                |> move (0,0)
+                |> notifyTap down,
+            text ("" ++ String.fromInt display)
+                |> filled black
+                |> move (-5, 5)
+            ]
