@@ -47,12 +47,12 @@ type Msg
     | Add1Dn
     | Coeff1Up
     | Coeff1Dn
-    -- | Trnsfm1
-    -- | Trnsfm2
-    -- | Trnsfm3
-    -- | InStep
-    -- | InSine
-    -- | InPulse
+    | Trnsfm1
+    | Trnsfm2
+    | Trnsfm3
+    | InStep
+    | InSine
+    | InPulse
 
 
 -- view model =
@@ -105,33 +105,33 @@ update msg model =
                         model.coefficient1
             }
 
-        -- Trnsfm1 ->
-        --     { model
-        --         | trnsfrm = Type1
-        --     }
+        Trnsfm1 ->
+            { model
+                | trnsfm = Type1
+            }
 
-        -- Trnsfm2 ->
-        --     { model
-        --         | trnsfrm = Type2
-        --     }
+        Trnsfm2 ->
+            { model
+                | trnsfm = Type2
+            }
 
-        -- Trnsfm3 ->
-        --     { model
-        --         | trnsfrm = Type3
-        --     }
+        Trnsfm3 ->
+            { model
+                | trnsfm = Type3
+            }
 
-        -- InStep ->
-        --     { model
-        --         | input = Step
-        --     }
+        InStep ->
+            { model
+                | input = Step
+            }
 
-        -- InSine ->
-        --     { model
-        --         | input = Sine
-        --     }
+        InSine ->
+            { model
+                | input = Sine
+            }
 
-        -- InPulse ->
-        --     { model
-        --         | input = Pulse
-        --     }
+        InPulse ->
+            { model
+                | input = Pulse
+            }
 
