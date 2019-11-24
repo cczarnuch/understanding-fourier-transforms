@@ -47,12 +47,12 @@ type Msg
     | Add1Dn
     | Coeff1Up
     | Coeff1Dn
-    | Trnsfm1
-    | Trnsfm2
-    | Trnsfm3
-    | InStep
-    | InSine
-    | InPulse
+    -- | Trnsfm1
+    -- | Trnsfm2
+    -- | Trnsfm3
+    -- | InStep
+    -- | InSine
+    -- | InPulse
 
 
 -- view model =
@@ -61,9 +61,9 @@ type Msg
 --myShapes model = []
 view model =
     div []
-    [ button [onClick Add1Up] [text "+"]
-    , div [] [text (String.fromInt model.addition1) ]
-    , button [onClick Add1Dn] [text "-"]
+    [ button [onClick Add1Up] [text "+"], button [onClick Coeff1Up] [text "+"]
+    , div [] [text (String.fromInt model.addition1), text "\t", text (String.fromInt model.coefficient1)]
+    , button [onClick Add1Dn] [text "-"], button [onClick Coeff1Dn] [text "-"]
     ]
 
 
@@ -100,38 +100,38 @@ update msg model =
             { model
                 | coefficient1 =
                     if model.coefficient1 > -model.maxCoefficient1 then
-                        model.coefficient1 + 1
+                        model.coefficient1 - 1
                     else
                         model.coefficient1
             }
 
-        Trnsfm1 ->
-            { model
-                -- |  =
-            }
+        -- Trnsfm1 ->
+        --     { model
+        --         | trnsfrm = Type1
+        --     }
 
-        Trnsfm2 ->
-            { model
-                -- |  =
-            }
+        -- Trnsfm2 ->
+        --     { model
+        --         | trnsfrm = Type2
+        --     }
 
-        Trnsfm3 ->
-            { model
-                -- |  =
-            }
+        -- Trnsfm3 ->
+        --     { model
+        --         | trnsfrm = Type3
+        --     }
 
-        InStep ->
-            { model
-                -- |  =
-            }
+        -- InStep ->
+        --     { model
+        --         | input = Step
+        --     }
 
-        InSine ->
-            { model
-                -- |  =
-            }
+        -- InSine ->
+        --     { model
+        --         | input = Sine
+        --     }
 
-        InPulse ->
-            { model
-                -- |  =
-            }
+        -- InPulse ->
+        --     { model
+        --         | input = Pulse
+        --     }
 
