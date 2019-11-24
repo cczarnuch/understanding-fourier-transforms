@@ -28,7 +28,8 @@ type Inputs
 
 
 init =
-    { trnsfm = Type1
+    { time = 0
+    , trnsfm = Type1
     , addition1 = 1
     , addition2 = 1
     , coefficient1 = 1
@@ -56,23 +57,53 @@ type Msg
     | InSine
     | InPulse
 
-
 myShapes model = [
+    -- Borders and lines
+    rect 640 480
+        |> outlined (solid 2) black,
+    rect 640 1
+        |> filled black,
+    rect 1 240
+        |> filled black
+        |> move (0,120),
+    
+    -- Top left section
+    text "Create your transfer function!"
+        |> filled black
+        |> scale 2
+        |> move (-305, 215),
     arrows model.addition1 Add1Up Add1Dn
-        |> move (-20,0),
+        |> move (-300,165),
     arrows model.addition2 Add2Up Add2Dn
-        |> move (20,0)
+        |> move (-270,165),
+    
+    -- Top Right section
+    text "Select your input"
+        |> filled black
+        |> scale 2
+        |> move (80, 215),
+    
+    -- Bottom section
+    rect 140 200
+        |> outlined (solid 1) black
+        |> move (0,-120),
+    text "G(s):"
+        |> filled black
+        |> scale 2
+        |> move (-25,-50)
     ]
 
 
 view model =
-    collage 512 380 (myShapes model)
+    collage 640 480 (myShapes model)
 
 
 update msg model =
     case msg of
-        Tick f g ->
-            model
+        Tick t _ ->
+            { model
+                | time = t
+            }
         Add1Up ->
             { model
                 | addition1 =
