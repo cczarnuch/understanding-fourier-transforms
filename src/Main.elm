@@ -30,6 +30,10 @@ type Inputs
 init =
     { time = 0
     , trnsfm = Type1
+    , tboxx = -260
+    , tboxy = 50
+    , inboxx = 60
+    , inboxy = 50
     , addition1 = 1
     , addition2 = 1
     , coefficient1 = 1
@@ -68,20 +72,38 @@ myShapes model = [
         |> move (0,120),
     
     -- Top left section
-    text "Create your transfer function!"
+    text "1. Create your transfer function!"
         |> filled black
         |> scale 2
-        |> move (-305, 215),
+        |> move (-315,215),
     arrows model.addition1 Add1Up Add1Dn
-        |> move (-300,165),
+        |> move (-260,150),
     arrows model.addition2 Add2Up Add2Dn
-        |> move (-270,165),
+        |> move (-200,150),
+    selectionBox1 model,
+    button model "s/s+1" Trnsfm1
+        |> move (-260,50),
+    button model "1/s+1" Trnsfm2
+        |> move (-160,50),
+    button model "s/s^2+1" Trnsfm3
+        |> move (-60,50),
     
     -- Top Right section
-    text "Select your input"
+    text "2. Select your input:"
         |> filled black
         |> scale 2
-        |> move (80, 215),
+        |> move (70, 215),
+    rect 100 100
+        |> outlined (solid 2) black
+        |> move (160,140),
+    selectionBox2 model,
+    button model "step" InStep
+        |> move (60,50),
+    button model "wave" InSine
+        |> move (160,50),
+    button model "pulse" InPulse
+        |> move (260,50),
+    changeInDisplay model,
     
     -- Bottom section
     rect 140 200
@@ -161,44 +183,125 @@ update msg model =
         Trnsfm1 ->
             { model
                 | trnsfm = Type1
+                , tboxx = -260
+                , tboxy = 50
             }
 
         Trnsfm2 ->
             { model
                 | trnsfm = Type2
+                , tboxx = -160
+                , tboxy = 50
             }
 
         Trnsfm3 ->
             { model
                 | trnsfm = Type3
+                , tboxx = -60
+                , tboxy = 50
             }
 
         InStep ->
             { model
                 | input = Step
+                , inboxx = 60
+                , tboxy = 50
             }
 
         InSine ->
             { model
                 | input = Sine
+                , inboxx = 160
+                , tboxy = 50
             }
 
         InPulse ->
             { model
                 | input = Pulse
+                , inboxx = 260
+                , tboxy = 50
             }
 
 
+--show which options are selected for function and input
+selectionBox1 model =
+    roundedRect 90 70 5
+        |> filled (rgba 0 182 255 (0.5 + 0.5 * sin (5 * model.time)))
+        |> move (model.tboxx, model.tboxy)
+
+selectionBox2 model =
+    roundedRect 90 70 5
+        |> filled (rgba 0 182 255 (0.5 + 0.5 * sin (5 * model.time-0.5)))
+        |> move (model.inboxx, model.inboxy)
+
+changeInDisplay model =
+    case model.input of
+        Step ->
+            stepShape
+                |> move (160,140)
+        Sine ->
+            sineShape
+                |> move (160,140)
+        Pulse ->
+            pulseShape
+                |> move (160,140)
+
+
+-- myShape groups
 arrows display up down = group[
             polygon [(-10,0),(0,20),(10,0)]
-                |> filled darkGray
+                |> filled blue
                 |> move (0,20)
                 |> notifyTap up,
             polygon [(-10,0),(0,-20),(10,0)]
-                |> filled darkGray
+                |> filled blue
                 |> move (0,0)
                 |> notifyTap down,
             text ("" ++ String.fromInt display)
                 |> filled black
                 |> move (-5, 5)
+            ]
+
+button model display action = group[
+            roundedRect 80 60 5
+                |> filled gray
+                |> notifyTap action,
+            text display
+                |> centered
+                |> filled black
+                |> scale 1.5
+            ]
+
+
+stepShape = group [
+            rect 50 1
+                |> filled black
+                |> move (-25,0),
+            rect 1 25
+                |> filled black
+                |> move (0,12.5),
+            rect 50 1
+                |> filled black
+                |> move (25,25)
+            ]
+
+sineShape = curve (-50,0) [Pull (-25,50) (0,0), Pull (25,-50) (50,0) ]
+                |> outlined (solid 1) black
+
+pulseShape = group [
+                rect 50 1
+                    |> filled black
+                    |> move (-25,0),
+                rect 1 25
+                    |> filled black
+                    |> move (0,12.5),
+                rect 25 1
+                    |> filled black
+                    |> move (12.5,25),
+                rect 1 25
+                    |> filled black
+                    |> move (25,12.5),
+                rect 25 1
+                    |> filled black
+                    |> move (37.5,0)
             ]
