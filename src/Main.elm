@@ -27,10 +27,6 @@ type Inputs
     | Sine
     | Pulse
 
-type Pulse
-    = ON
-    | OFF
-
 init =
     { time = 0
     , ct = 0
@@ -156,42 +152,42 @@ update msg model =
                             case model.input of
                                 Step ->
                                     if et < 5 then
-                                        25 * (e^(-et*toFloat(model.addition2)))
+                                        25 * (e^(-et*toFloat(model.addition1)))
                                     else
                                         0
                                 Sine ->
-                                    25 * ((1/2)*cos(toFloat(model.addition2)*et) + (1/2)*sin(toFloat(model.addition2)*et) - (1/2)*(e^(-et*toFloat(model.addition2))))
+                                    25 * ((1/2)*cos(toFloat(model.addition1/)*et) + (1/2)*sin(toFloat(model.addition1)*et) - (1/2)*(e^(-et*toFloat(model.addition1))))
                                 Pulse ->
                                     if  modBy 2 (floor (et)) == 0 then
-                                        25 * (e^(-et*toFloat(model.addition2)))
+                                        25 * (e^(-et*toFloat(model.addition1)))
                                     else
                                         0
                         Type2 ->
                             case model.input of
                                 Step ->
                                     if et < 5 then
-                                        25 * (1 - e^(-et*toFloat(model.addition2)))
+                                        25 * (1 - e^(-et*toFloat(model.addition1)))
                                     else
                                         0
                                 Sine ->
-                                    25 * (-(1/2)*cos(toFloat(model.addition2)*et) + (1/2)*sin(toFloat(model.addition2)*et) + (1/2)*(e^(-et*toFloat(model.addition2))))
+                                    25 * (-(1/2)*cos(toFloat(model.addition1)*et) + (1/2)*sin(toFloat(model.addition1)*et) + (1/2)*(e^(-et*toFloat(model.addition1))))
                                 Pulse ->
                                     if  modBy 2 (floor (et)) == 0 then
-                                        25 * (1 - e^(-et*toFloat(model.addition2)))
+                                        25 * (1 - e^(-et*toFloat(model.addition1)))
                                     else
                                         0
                         Type3 ->
                             case model.input of
                                 Step ->
                                     if et < 5 then
-                                        25 * sin(et*toFloat(model.addition2))
+                                        25 * sin(et*toFloat(model.addition1))
                                     else
                                         0
                                 Sine ->
                                     0
                                 Pulse ->
                                     if  modBy 2 (floor (et)) == 0 then
-                                        25 * sin(et*toFloat(model.addition2))
+                                        25 * sin(et*toFloat(model.addition1))
                                     else
                                         0
                 inputGraphPoint =
