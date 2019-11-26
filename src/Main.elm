@@ -31,7 +31,7 @@ type Inputs
 init =
     { time = 0
     , trnsfm = Type2
-    , tboxx = -260
+    , tboxx = -160
     , tboxy = 50
     , inboxx = 60
     , inboxy = 50
