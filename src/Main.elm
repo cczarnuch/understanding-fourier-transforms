@@ -35,14 +35,12 @@ init =
     , tboxy = 50
     , inboxx = 60
     , inboxy = 50
-    , addition1 = 0
-    , addition2 = 1
+    , addition1 = 1
     , coefficient1 = 1
     , input = Step
 
     -- Constant variables
     , maxAddition1 = 40
-    , maxAddition2 = 40
     , maxCoefficient1 = 10
 
     -- Function lists
@@ -58,8 +56,6 @@ type Msg
     = Tick Float GetKeyState
     | Add1Up
     | Add1Dn
-    | Add2Up
-    | Add2Dn
     | Coeff1Up
     | Coeff1Dn
     | Trnsfm1
@@ -71,7 +67,7 @@ type Msg
 
 myShapes model = [
     -- Borders and lines
-    rect 640 480
+    roundedRect 638 478 5
         |> outlined (solid 2) black,
     rect 640 1
         |> filled black,
@@ -84,14 +80,6 @@ myShapes model = [
         |> filled black
         |> scale 2
         |> move (-315,215),
-    arrows model.addition1 Add1Up Add1Dn
-        |> move (-260,150),
-    text "+"
-        |> filled black
-        |> scale 2
-        |> move (-240,150),
-    -- arrows model.addition2 Add2Up Add2Dn
-    --     |> move (-200,150),
     selectionBox1 model,
     button model "s/s+a" Trnsfm1
         |> move (-260,50),
@@ -106,7 +94,7 @@ myShapes model = [
         |> filled black
         |> scale 2
         |> move (70, 215),
-    rect 100 100
+    roundedRect 100 100 5
         |> outlined (solid 2) black
         |> move (160,140),
     selectionBox2 model,
@@ -119,7 +107,7 @@ myShapes model = [
     changeInDisplay model,
 
     -- Bottom section
-    rect 140 200
+    roundedRect 140 200 5
         |> outlined (solid 1) black
         |> move (0,-120),
     text "G(s):"
@@ -212,24 +200,6 @@ update msg model =
                         model.addition1 - 1
                     else
                         model.addition1
-            }
-
-        Add2Up ->
-            { model
-                | addition2 =
-                    if model.addition2 < model.maxAddition2 then
-                        model.addition2 + 1
-                    else
-                        model.addition2
-            }
-
-        Add2Dn ->
-            { model
-                | addition2 =
-                    if model.addition2 > -model.maxAddition2 then
-                        model.addition2 - 1
-                    else
-                        model.addition2
             }
 
         Coeff1Up ->
@@ -337,12 +307,12 @@ arrows display up down = group[
                 |> notifyTap up,
             polygon [(-10,0),(0,-20),(10,0)]
                 |> filled blue
-                |> move (0,0)
                 |> notifyTap down,
-            text ("" ++ String.fromInt display)
+            text (String.fromInt display)
+                |> centered
                 |> filled black
                 |> scale 1.3
-                |> move (-5, 5)
+                |> move (0, 5)
             ]
 
 numGraphPoints model =
@@ -435,12 +405,25 @@ func1 model = group [
                 |> filled black
                 |> scale 2
                 |> move (-10,-40),
-            arrows model.addition2 Add2Up Add2Dn
-                |> move (20,-42.5)
+            arrows model.addition1 Add1Up Add1Dn
+                |> move (20,-42.5),
+            text "s"
+                |> centered
+                |> filled black
+                |> scale 2
+                |> move (160,-270),
+            rect 60 1
+                |> filled black
+                |> move (160,-280),
+            text ("s + " ++ String.fromInt model.addition1)
+                |> centered
+                |> filled black
+                |> scale 2
+                |> move (160,-300)
         ]
 
 func2 model = group [
-            arrows model.addition2 Add2Up Add2Dn
+            arrows model.addition1 Add1Up Add1Dn
                 |> move (0,15)
                 |> scale 0.75,
             rect 100 1
@@ -451,9 +434,22 @@ func2 model = group [
                 |> filled black
                 |> scale 2
                 |> move (-10,-40),
-            arrows model.addition2 Add2Up Add2Dn
+            arrows model.addition1 Add1Up Add1Dn
                 |> scale 0.75
-                |> move (20,-40)
+                |> move (20,-40),
+            text (String.fromInt model.addition1)
+                |> centered
+                |> filled black
+                |> scale 2
+                |> move (160,-270),
+            rect 60 1
+                |> filled black
+                |> move (160,-280),
+            text ("s + " ++ String.fromInt model.addition1)
+                |> centered
+                |> filled black
+                |> scale 2
+                |> move (160,-300)
         ]
 
 func3 model = group [
@@ -473,6 +469,23 @@ func3 model = group [
                 |> centered
                 |> filled black
                 |> move (-17.5,-30),
-            arrows model.addition2 Add2Up Add2Dn
-                |> move (20,-42.5)
+            arrows model.addition1 Add1Up Add1Dn
+                |> move (20,-42.5),
+            text "s"
+                |> centered
+                |> filled black
+                |> scale 2
+                |> move (160,-270),
+            rect 60 1
+                |> filled black
+                |> move (160,-280),
+            text ("s  + " ++ String.fromInt model.addition1)
+                |> centered
+                |> filled black
+                |> scale 2
+                |> move (160,-300),
+            text "2"
+                |> centered
+                |> filled black
+                |> move (145,-290)
         ]
