@@ -99,12 +99,8 @@ myShapes model = [
         |> move (-160,50),
     button model "s/s^2+a" Trnsfm3
         |> move (-60,50),
-<<<<<<< HEAD
     changeFuncDisplay model,
     
-=======
-
->>>>>>> master
     -- Top Right section
     text "2. Select your input:"
         |> filled black
@@ -408,7 +404,6 @@ sineShape = curve (-50,0) [Pull (-25,50) (0,0), Pull (25,-50) (50,0) ]
                 |> outlined (solid 1) black
 
 pulseShape = group [
-<<<<<<< HEAD
             rect 50 1
                 |> filled black
                 |> move (-25,0),
@@ -481,21 +476,3 @@ func3 model = group [
             arrows model.addition2 Add2Up Add2Dn
                 |> move (20,-42.5)
         ]
-=======
-                rect 50 1
-                    |> filled black
-                    |> move (-25,0),
-                rect 1 25
-                    |> filled black
-                    |> move (0,12.5),
-                rect 25 1
-                    |> filled black
-                    |> move (12.5,25),
-                rect 1 25
-                    |> filled black
-                    |> move (25,12.5),
-                rect 25 1
-                    |> filled black
-                    |> move (37.5,0)
-            ]
->>>>>>> master
