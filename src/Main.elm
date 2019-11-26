@@ -31,11 +31,11 @@ type Inputs
 init =
     { time = 0
     , trnsfm = Type2
-    , tboxx = -260
+    , tboxx = -160
     , tboxy = 50
     , inboxx = 60
     , inboxy = 50
-    , addition1 = 1
+    , addition1 = 0
     , addition2 = 1
     , coefficient1 = 1
     , input = Step
@@ -86,16 +86,21 @@ myShapes model = [
         |> move (-315,215),
     arrows model.addition1 Add1Up Add1Dn
         |> move (-260,150),
-    arrows model.addition2 Add2Up Add2Dn
-        |> move (-200,150),
+    text "+"
+        |> filled black
+        |> scale 2
+        |> move (-240,150),
+    -- arrows model.addition2 Add2Up Add2Dn
+    --     |> move (-200,150),
     selectionBox1 model,
-    button model "s/s+1" Trnsfm1
+    button model "s/s+a" Trnsfm1
         |> move (-260,50),
-    button model "1/s+1" Trnsfm2
+    button model "a/s+a" Trnsfm2
         |> move (-160,50),
-    button model "s/s^2+1" Trnsfm3
+    button model "s/s^2+a" Trnsfm3
         |> move (-60,50),
-
+    changeFuncDisplay model,
+    
     -- Top Right section
     text "2. Select your input:"
         |> filled black
@@ -294,6 +299,18 @@ selectionBox1 model =
         |> filled (rgba 0 182 255 (0.5 + 0.5 * sin (5 * model.time)))
         |> move (model.tboxx, model.tboxy)
 
+changeFuncDisplay model =
+    case model.trnsfm of
+        Type1 ->
+            func1 model
+                |> move (-160,160)
+        Type2 ->
+            func2 model
+                |> move (-160,160)
+        Type3 ->
+            func3 model
+                |> move (-160,160)
+
 selectionBox2 model =
     roundedRect 90 70 5
         |> filled (rgba 0 182 255 (0.5 + 0.5 * sin (5 * model.time-0.5)))
@@ -324,6 +341,7 @@ arrows display up down = group[
                 |> notifyTap down,
             text ("" ++ String.fromInt display)
                 |> filled black
+                |> scale 1.3
                 |> move (-5, 5)
             ]
 
@@ -365,6 +383,7 @@ button model display action = group[
             text display
                 |> centered
                 |> filled black
+                |> notifyTap action
                 |> scale 1.5
             ]
 
@@ -385,19 +404,75 @@ sineShape = curve (-50,0) [Pull (-25,50) (0,0), Pull (25,-50) (50,0) ]
                 |> outlined (solid 1) black
 
 pulseShape = group [
-                rect 50 1
-                    |> filled black
-                    |> move (-25,0),
-                rect 1 25
-                    |> filled black
-                    |> move (0,12.5),
-                rect 25 1
-                    |> filled black
-                    |> move (12.5,25),
-                rect 1 25
-                    |> filled black
-                    |> move (25,12.5),
-                rect 25 1
-                    |> filled black
-                    |> move (37.5,0)
-            ]
+            rect 50 1
+                |> filled black
+                |> move (-25,0),
+            rect 1 25
+                |> filled black
+                |> move (0,12.5),
+            rect 25 1
+                |> filled black
+                |> move (12.5,25),
+            rect 1 25
+                |> filled black
+                |> move (25,12.5),
+            rect 25 1
+                |> filled black
+                |> move (37.5,0)
+        ]
+
+
+func1 model = group [
+            text "s"
+                |> centered
+                |> filled black
+                |> scale 2
+                |> move (0,10),
+            rect 100 1
+                |> filled black,
+            text "s +"
+                |> centered
+                |> filled black
+                |> scale 2
+                |> move (-10,-40),
+            arrows model.addition2 Add2Up Add2Dn
+                |> move (20,-42.5)
+        ]
+
+func2 model = group [
+            arrows model.addition2 Add2Up Add2Dn
+                |> move (0,15)
+                |> scale 0.75,
+            rect 100 1
+                |> filled black
+                |> move (0,-7.5),
+            text "s +"
+                |> centered
+                |> filled black
+                |> scale 2
+                |> move (-10,-40),
+            arrows model.addition2 Add2Up Add2Dn
+                |> scale 0.75
+                |> move (20,-40)
+        ]
+
+func3 model = group [
+            text "s"
+                |> centered
+                |> filled black
+                |> scale 2
+                |> move (0,10),
+            rect 100 1
+                |> filled black,
+            text "s  +"
+                |> centered
+                |> filled black
+                |> scale 2
+                |> move (-10,-40),
+            text "2"
+                |> centered
+                |> filled black
+                |> move (-17.5,-30),
+            arrows model.addition2 Add2Up Add2Dn
+                |> move (20,-42.5)
+        ]
