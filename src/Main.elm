@@ -156,7 +156,7 @@ update msg model =
                                     else
                                         0
                                 Sine ->
-                                    25 * ((1/2)*cos(toFloat(model.addition1/)*et) + (1/2)*sin(toFloat(model.addition1)*et) - (1/2)*(e^(-et*toFloat(model.addition1))))
+                                    25 * ((1/2)*cos(toFloat(model.addition1)*et) + (1/2)*sin(toFloat(model.addition1)*et) - (1/2)*(e^(-et*toFloat(model.addition1))))
                                 Pulse ->
                                     if  modBy 2 (floor (et)) == 0 then
                                         25 * (e^(-et*toFloat(model.addition1)))
