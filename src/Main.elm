@@ -27,10 +27,14 @@ type Inputs
     | Sine
     | Pulse
 
+type Pulse
+    = ON
+    | OFF
 
 init =
     { time = 0
-    , trnsfm = Type2
+    , ct = 0
+    , trnsfm = Type1
     , tboxx = -260
     , tboxy = 50
     , inboxx = 60
@@ -47,9 +51,7 @@ init =
 
     -- Function lists
     , inputTime = []
-    , inputFreq = []
     , outputTime = []
-    , outputFreq = []
     , graphLength = 200
     }
 
@@ -124,9 +126,7 @@ myShapes model = [
     -- Graphs
     group
         [ group (inputGraphTime model) |> move ( -150 , -190 )
-       -- , group (inputGraphFreq model) |> move ( 0, 0 )
         , group (outputGraphTime model) |> move ( 220, -190 )
-        --, group (outputGraphFreq model) |> move ( 0, 0 )
         ]
         |> move ( -140, 80 )
     ]
@@ -140,22 +140,55 @@ update msg model =
     case msg of
         Tick t _ ->
             let
+                -- Elapsed time
+                et = (t - model.ct)
+
                 inputGraph =
                     case model.input of
                         Step ->
-                            50
+                            if et < 5 then
+                                50
+                            else
+                                0
                         Sine ->
-                             50 * sin t
+                            50 * sin (et)
                         Pulse ->
-                            50
+                            if  modBy 4 (floor (et)) == 0 then
+                                50
+                            else
+                                0
                 outputGraph =
                     case model.trnsfm of
                         Type1 ->
-                            50
+                            case model.input of
+                                Step ->
+                                    if et < 5 then
+                                        50 * (e^(-et))
+                                    else
+                                        0
+                                Sine ->
+                                    0
+                                Pulse ->
+                                    0
                         Type2 ->
-                            50 * (1 - e^(-t))
+                            case model.input of
+                                Step ->
+                                    if et < 5 then
+                                        50 * (1 - e^(-et))
+                                    else
+                                        0
+                                Sine ->
+                                    0
+                                Pulse ->
+                                    0
                         Type3 ->
-                            50
+                            case model.input of
+                                Step ->
+                                    50 * (1 - e^(-et))
+                                Sine ->
+                                    0
+                                Pulse ->
+                                    0
                 inputGraphPoint =
                     (0, inputGraph, rgb 0 0 0)
 
@@ -250,6 +283,7 @@ update msg model =
                 | trnsfm = Type1
                 , tboxx = -260
                 , tboxy = 50
+                , ct = model.time
             }
 
         Trnsfm2 ->
@@ -257,6 +291,7 @@ update msg model =
                 | trnsfm = Type2
                 , tboxx = -160
                 , tboxy = 50
+                , ct = model.time
             }
 
         Trnsfm3 ->
@@ -264,6 +299,7 @@ update msg model =
                 | trnsfm = Type3
                 , tboxx = -60
                 , tboxy = 50
+                , ct = model.time
             }
 
         InStep ->
@@ -271,6 +307,7 @@ update msg model =
                 | input = Step
                 , inboxx = 60
                 , tboxy = 50
+                , ct = model.time
             }
 
         InSine ->
@@ -278,6 +315,7 @@ update msg model =
                 | input = Sine
                 , inboxx = 160
                 , tboxy = 50
+                , ct = model.time
             }
 
         InPulse ->
@@ -285,8 +323,8 @@ update msg model =
                 | input = Pulse
                 , inboxx = 260
                 , tboxy = 50
+                , ct = model.time
             }
-
 
 --show which options are selected for function and input
 selectionBox1 model =
@@ -337,24 +375,10 @@ inputGraphTime model =
     in
     List.take (numGraphPoints model) (List.map (\( ( a, b, col1 ), ( c, d, col2 ) ) -> line ( a, b ) ( c, d ) |> outlined (solid 1) col1) points)
 
-inputGraphFreq model =
-    let
-        points =
-            List.map2 (\x y -> ( x, y )) model.inputFreq (List.drop 1 model.inputFreq)
-    in
-    List.take (numGraphPoints model) (List.map (\( ( a, b, col1 ), ( c, d, col2 ) ) -> line ( a, b ) ( c, d ) |> outlined (solid 1) col1) points)
-
 outputGraphTime model =
     let
         points =
             List.map2 (\x y -> ( x, y )) model.outputTime (List.drop 1 model.outputTime)
-    in
-    List.take (numGraphPoints model) (List.map (\( ( a, b, col1 ), ( c, d, col2 ) ) -> line ( a, b ) ( c, d ) |> outlined (solid 1) col1) points)
-
-outputGraphFreq model =
-    let
-        points =
-            List.map2 (\x y -> ( x, y )) model.outputFreq (List.drop 1 model.outputFreq)
     in
     List.take (numGraphPoints model) (List.map (\( ( a, b, col1 ), ( c, d, col2 ) ) -> line ( a, b ) ( c, d ) |> outlined (solid 1) col1) points)
 
