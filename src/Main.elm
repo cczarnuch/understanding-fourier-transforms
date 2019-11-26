@@ -1,3 +1,4 @@
+module Main exposing (..)
 import Browser
 -- import Html exposing (Html, button, div, text)
 -- import Html.Events exposing (onClick)
@@ -29,7 +30,7 @@ type Inputs
 
 init =
     { time = 0
-    , trnsfm = Type1
+    , trnsfm = Type2
     , tboxx = -260
     , tboxy = 50
     , inboxx = 60
@@ -43,6 +44,13 @@ init =
     , maxAddition1 = 40
     , maxAddition2 = 40
     , maxCoefficient1 = 10
+
+    -- Function lists
+    , inputTime = []
+    , inputFreq = []
+    , outputTime = []
+    , outputFreq = []
+    , graphLength = 200
     }
 
 
@@ -70,7 +78,7 @@ myShapes model = [
     rect 1 240
         |> filled black
         |> move (0,120),
-    
+
     -- Top left section
     text "1. Create your transfer function!"
         |> filled black
@@ -91,8 +99,12 @@ myShapes model = [
         |> move (-160,50),
     button model "s/s^2+a" Trnsfm3
         |> move (-60,50),
+<<<<<<< HEAD
     changeFuncDisplay model,
     
+=======
+
+>>>>>>> master
     -- Top Right section
     text "2. Select your input:"
         |> filled black
@@ -109,7 +121,7 @@ myShapes model = [
     button model "pulse" InPulse
         |> move (260,50),
     changeInDisplay model,
-    
+
     -- Bottom section
     rect 140 200
         |> outlined (solid 1) black
@@ -117,7 +129,15 @@ myShapes model = [
     text "G(s):"
         |> filled black
         |> scale 2
-        |> move (-25,-50)
+        |> move (-25,-50),
+    -- Graphs
+    group
+        [ group (inputGraphTime model) |> move ( -150 , -190 )
+       -- , group (inputGraphFreq model) |> move ( 0, 0 )
+        , group (outputGraphTime model) |> move ( 220, -190 )
+        --, group (outputGraphFreq model) |> move ( 0, 0 )
+        ]
+        |> move ( -140, 80 )
     ]
 
 
@@ -128,8 +148,57 @@ view model =
 update msg model =
     case msg of
         Tick t _ ->
+            let
+                inputGraph =
+                    case model.input of
+                        Step ->
+                            50
+                        Sine ->
+                             50 * sin t
+                        Pulse ->
+                            50
+                outputGraph =
+                    case model.trnsfm of
+                        Type1 ->
+                            50
+                        Type2 ->
+                            50 * (1 - e^(-t))
+                        Type3 ->
+                            50
+                inputGraphPoint =
+                    (0, inputGraph, rgb 0 0 0)
+
+                outputGraphPoint =
+                    (0, outputGraph, rgb 0 0 0)
+            in
             { model
                 | time = t
+                , inputTime =
+                    List.take 2470
+                        ([ inputGraphPoint ]
+                            ++ List.filterMap
+                                (\( xx, yy, cc ) ->
+                                    if xx >= model.graphLength then
+                                        Nothing
+
+                                    else
+                                        Just ( xx + 0.35, yy, cc )
+                                )
+                            model.inputTime
+                        )
+                , outputTime =
+                    List.take 2470
+                        ([ outputGraphPoint ]
+                            ++ List.filterMap
+                                (\( xx, yy, cc ) ->
+                                    if xx >= model.graphLength then
+                                        Nothing
+
+                                    else
+                                        Just ( xx + 0.35, yy, cc )
+                                )
+                            model.outputTime
+                        )
             }
         Add1Up ->
             { model
@@ -280,6 +349,37 @@ arrows display up down = group[
                 |> move (-5, 5)
             ]
 
+numGraphPoints model =
+    round 2505
+
+inputGraphTime model =
+    let
+        points =
+            List.map2 (\x y -> ( x, y )) model.inputTime (List.drop 1 model.inputTime)
+    in
+    List.take (numGraphPoints model) (List.map (\( ( a, b, col1 ), ( c, d, col2 ) ) -> line ( a, b ) ( c, d ) |> outlined (solid 1) col1) points)
+
+inputGraphFreq model =
+    let
+        points =
+            List.map2 (\x y -> ( x, y )) model.inputFreq (List.drop 1 model.inputFreq)
+    in
+    List.take (numGraphPoints model) (List.map (\( ( a, b, col1 ), ( c, d, col2 ) ) -> line ( a, b ) ( c, d ) |> outlined (solid 1) col1) points)
+
+outputGraphTime model =
+    let
+        points =
+            List.map2 (\x y -> ( x, y )) model.outputTime (List.drop 1 model.outputTime)
+    in
+    List.take (numGraphPoints model) (List.map (\( ( a, b, col1 ), ( c, d, col2 ) ) -> line ( a, b ) ( c, d ) |> outlined (solid 1) col1) points)
+
+outputGraphFreq model =
+    let
+        points =
+            List.map2 (\x y -> ( x, y )) model.outputFreq (List.drop 1 model.outputFreq)
+    in
+    List.take (numGraphPoints model) (List.map (\( ( a, b, col1 ), ( c, d, col2 ) ) -> line ( a, b ) ( c, d ) |> outlined (solid 1) col1) points)
+
 button model display action = group[
             roundedRect 80 60 5
                 |> filled gray
@@ -308,6 +408,7 @@ sineShape = curve (-50,0) [Pull (-25,50) (0,0), Pull (25,-50) (50,0) ]
                 |> outlined (solid 1) black
 
 pulseShape = group [
+<<<<<<< HEAD
             rect 50 1
                 |> filled black
                 |> move (-25,0),
@@ -380,3 +481,21 @@ func3 model = group [
             arrows model.addition2 Add2Up Add2Dn
                 |> move (20,-42.5)
         ]
+=======
+                rect 50 1
+                    |> filled black
+                    |> move (-25,0),
+                rect 1 25
+                    |> filled black
+                    |> move (0,12.5),
+                rect 25 1
+                    |> filled black
+                    |> move (12.5,25),
+                rect 1 25
+                    |> filled black
+                    |> move (25,12.5),
+                rect 25 1
+                    |> filled black
+                    |> move (37.5,0)
+            ]
+>>>>>>> master
