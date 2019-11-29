@@ -42,6 +42,8 @@ init =
     -- Constant variables
     , maxAddition1 = 40
     , maxCoefficient1 = 10
+    , pulsePeriod = 5
+    , graphScale = 20
 
     -- Function lists
     , inputTime = []
@@ -105,6 +107,14 @@ myShapes model = [
     changeInDisplay model,
 
     -- Bottom section
+    text "Input"
+        |> centered
+        |> filled black
+        |> move (-190,-20),
+    text "Output"
+        |> centered
+        |> filled black
+        |> move (190,-20),
     roundedRect 140 200 5
         |> outlined (solid 1) black
         |> move (0,-120),
@@ -112,10 +122,23 @@ myShapes model = [
         |> filled black
         |> scale 2
         |> move (-25,-50),
+
     -- Graphs
+    graphPaperCustom 28.5 0.5 black
+        |> scale 0.35
+        |> move (-190,-120),
+    rect 1 160
+        |> filled blue
+        |> move (-290,-120),
+    graphPaperCustom 28.5 0.5 black
+        |> scale 0.35
+        |> move (190,-120),
+    rect 1 160
+        |> filled blue
+        |> move (90,-120),
     group
         [ group (inputGraphTime model) |> move ( -150 , -190 )
-        , group (outputGraphTime model) |> move ( 220, -190 )
+        , group (outputGraphTime model) |> move ( 230, -190 )
         ]
         |> move ( -140, 80 )
     ]
@@ -136,14 +159,14 @@ update msg model =
                     case model.input of
                         Step ->
                             if et < 5 then
-                                25
+                                model.graphScale
                             else
                                 0
                         Sine ->
-                            25 * sin (et)
+                            model.graphScale * sin (et)
                         Pulse ->
-                            if  modBy 2 (floor (et)) == 0 then
-                                25
+                            if  modBy model.pulsePeriod (floor (et)) == 0 then
+                                model.graphScale
                             else
                                 0
                 outputGraph =
@@ -152,49 +175,49 @@ update msg model =
                             case model.input of
                                 Step ->
                                     if et < 5 then
-                                        25 * (e^(-et*toFloat(model.addition1)))
+                                        model.graphScale * (e^(-et*toFloat(model.addition1)))
                                     else
                                         0
                                 Sine ->
-                                    25 * ((1/2)*cos(toFloat(model.addition1)*et) + (1/2)*sin(toFloat(model.addition1)*et) - (1/2)*(e^(-et*toFloat(model.addition1))))
+                                    model.graphScale * ((1/2)*cos(toFloat(model.addition1)*et) + (1/2)*sin(toFloat(model.addition1)*et) - (1/2)*(e^(-et*toFloat(model.addition1))))
                                 Pulse ->
-                                    if  modBy 2 (floor (et)) == 0 then
-                                        25 * (e^(-et*toFloat(model.addition1)))
+                                    if  modBy model.pulsePeriod (floor (et)) == 0 then
+                                        model.graphScale * (e^(-et*toFloat(model.addition1)))
                                     else
                                         0
                         Type2 ->
                             case model.input of
                                 Step ->
                                     if et < 5 then
-                                        25 * (1 - e^(-et*toFloat(model.addition1)))
+                                        model.graphScale * (1 - e^(-et*toFloat(model.addition1)))
                                     else
                                         0
                                 Sine ->
-                                    25 * (-(1/2)*cos(toFloat(model.addition1)*et) + (1/2)*sin(toFloat(model.addition1)*et) + (1/2)*(e^(-et*toFloat(model.addition1))))
+                                    model.graphScale * (-(1/2)*cos(toFloat(model.addition1)*et) + (1/2)*sin(toFloat(model.addition1)*et) + (1/2)*(e^(-et*toFloat(model.addition1))))
                                 Pulse ->
-                                    if  modBy 2 (floor (et)) == 0 then
-                                        25 * (1 - e^(-et*toFloat(model.addition1)))
+                                    if  modBy model.pulsePeriod (floor (et)) == 0 then
+                                        model.graphScale * (1 - e^(-et*toFloat(model.addition1)))
                                     else
                                         0
                         Type3 ->
                             case model.input of
                                 Step ->
                                     if et < 5 then
-                                        25 * sin(et*toFloat(model.addition1))
+                                        model.graphScale * sin(et*toFloat(model.addition1))
                                     else
                                         0
                                 Sine ->
                                     0
                                 Pulse ->
-                                    if  modBy 2 (floor (et)) == 0 then
-                                        25 * sin(et*toFloat(model.addition1))
+                                    if  modBy model.pulsePeriod (floor (et)) == 0 then
+                                        model.graphScale * sin(et*toFloat(model.addition1))
                                     else
                                         0
                 inputGraphPoint =
-                    (0, inputGraph, rgb 0 0 0)
+                    (0, inputGraph, black)
 
                 outputGraphPoint =
-                    (0, outputGraph, rgb 0 0 0)
+                    (0, outputGraph, black)
             in
             { model
                 | time = t
