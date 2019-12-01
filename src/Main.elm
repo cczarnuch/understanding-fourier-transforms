@@ -155,6 +155,7 @@ update msg model =
                 -- Elapsed time
                 et = (t - model.ct)
 
+                -- The input graph shows the input to the transfer function based on the option selected in step 2
                 inputGraph =
                     case model.input of
                         Step ->
@@ -169,6 +170,9 @@ update msg model =
                                 model.graphScale
                             else
                                 0
+
+                -- The output graph shows the output of the transfer function based on the inpt calculated above
+                -- there are 3x3=9 cases for the output
                 outputGraph =
                     case model.trnsfm of
                         Type1 ->
@@ -248,6 +252,8 @@ update msg model =
                             model.outputTime
                         )
             }
+
+        -- Add one to the addition constant in the transfer function
         Add1Up ->
             { model
                 | addition1 =
@@ -257,6 +263,7 @@ update msg model =
                         model.addition1
             }
 
+        -- Subtract one from the addition constant
         Add1Dn ->
             { model
                 | addition1 =
@@ -266,6 +273,8 @@ update msg model =
                         model.addition1
             }
 
+        -- UNUSED
+        -- Add one to the coefficient of the transfer function
         Coeff1Up ->
             { model
                 | coefficient1 =
@@ -275,6 +284,8 @@ update msg model =
                         model.coefficient1
             }
 
+        -- UNUSED
+        -- Sub one from the coefficient of the transfer function
         Coeff1Dn ->
             { model
                 | coefficient1 =
@@ -284,6 +295,7 @@ update msg model =
                         model.coefficient1
             }
 
+        -- Changes type of transfer function selected and resets graph
         Trnsfm1 ->
             { model
                 | trnsfm = Type1
@@ -308,6 +320,7 @@ update msg model =
                 , ct = model.time
             }
 
+        -- Changes type of input function and resets time
         InStep ->
             { model
                 | input = Step
@@ -332,12 +345,13 @@ update msg model =
                 , ct = model.time
             }
 
---show which options are selected for function and input
+-- Show which options are selected for transfer function
 selectionBox1 model =
     roundedRect 90 70 5
         |> filled (rgba 0 182 255 (0.5 + 0.5 * sin (5 * model.time)))
         |> move (model.tboxx, model.tboxy)
 
+-- Show the transfer function selected in the 'black box'
 changeFuncDisplay model =
     case model.trnsfm of
         Type1 ->
@@ -350,11 +364,13 @@ changeFuncDisplay model =
             func3 model
                 |> move (-160,160)
 
+-- Shows which options are selected for input function
 selectionBox2 model =
     roundedRect 90 70 5
         |> filled (rgba 0 182 255 (0.5 + 0.5 * sin (5 * model.time-0.5)))
         |> move (model.inboxx, model.inboxy)
 
+-- Change display icon for input function
 changeInDisplay model =
     case model.input of
         Step ->
