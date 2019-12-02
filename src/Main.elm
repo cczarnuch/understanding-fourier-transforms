@@ -15,13 +15,13 @@ main =
         , title = "Understanding Fourier Transforms"
         }
 
-
+-- Type representing the three transfer functions
 type FTrnsfms
     = Type1
     | Type2
     | Type3
 
-
+-- Types representing the three input functions
 type Inputs
     = Step
     | Sine
@@ -45,7 +45,7 @@ init =
     , pulsePeriod = 5
     , graphScale = 20
 
-    -- Function lists
+    -- Graph points lists
     , inputTime = []
     , outputTime = []
     , graphLength = 200
@@ -403,6 +403,7 @@ arrows display up down = group[
 numGraphPoints model =
     round 2505
 
+-- Draws the input graph to the screen
 inputGraphTime model =
     let
         points =
@@ -410,6 +411,7 @@ inputGraphTime model =
     in
     List.take (numGraphPoints model) (List.map (\( ( a, b, col1 ), ( c, d, col2 ) ) -> line ( a, b ) ( c, d ) |> outlined (solid 1) col1) points)
 
+-- Draws the output graph to the screen
 outputGraphTime model =
     let
         points =
