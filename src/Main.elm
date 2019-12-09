@@ -1,7 +1,13 @@
+-- 4HC3 Fall 2019
+-- Group 24
+-- Connor Czarnuch
+-- Ian Currie
+-- Lucas Zacharewicz
+
+-- Understanding Fourier Transforms
+
 module Main exposing (..)
 import Browser
--- import Html exposing (Html, button, div, text)
--- import Html.Events exposing (onClick)
 
 import GraphicSVG exposing (..)
 import GraphicSVG.EllieApp exposing (..)
@@ -28,6 +34,7 @@ type Inputs
     | Pulse
 
 init =
+    -- Model variables
     { time = 0
     , ct = 0
     , trnsfm = Type1
@@ -111,17 +118,22 @@ myShapes model = [
         |> centered
         |> filled black
         |> move (-190,-20),
+    text "Time Domain"
+        |> centered
+        |> filled black
+        |> scale 1.5
+        |> move (0, -20),
     text "Output"
         |> centered
         |> filled black
         |> move (190,-20),
-    roundedRect 140 200 5
+    roundedRect 140 180 5
         |> outlined (solid 1) black
         |> move (0,-120),
     text "G(s):"
         |> filled black
         |> scale 2
-        |> move (-25,-50),
+        |> move (-25,-60),
 
     -- Graphs
     graphPaperCustom 28.5 0.5 black
@@ -163,8 +175,10 @@ update msg model =
                                 model.graphScale
                             else
                                 0
+
                         Sine ->
                             model.graphScale * sin (et)
+
                         Pulse ->
                             if  modBy model.pulsePeriod (floor (et)) == 0 then
                                 model.graphScale
@@ -182,13 +196,16 @@ update msg model =
                                         model.graphScale * (e^(-et*toFloat(model.addition1)))
                                     else
                                         0
+
                                 Sine ->
                                     model.graphScale * ((1/2)*cos(toFloat(model.addition1)*et) + (1/2)*sin(toFloat(model.addition1)*et) - (1/2)*(e^(-et*toFloat(model.addition1))))
+
                                 Pulse ->
                                     if  modBy model.pulsePeriod (floor (et)) == 0 then
                                         model.graphScale * (e^(-et*toFloat(model.addition1)))
                                     else
                                         0
+
                         Type2 ->
                             case model.input of
                                 Step ->
@@ -196,13 +213,16 @@ update msg model =
                                         model.graphScale * (1 - e^(-et*toFloat(model.addition1)))
                                     else
                                         0
+
                                 Sine ->
                                     model.graphScale * (-(1/2)*cos(toFloat(model.addition1)*et) + (1/2)*sin(toFloat(model.addition1)*et) + (1/2)*(e^(-et*toFloat(model.addition1))))
+
                                 Pulse ->
                                     if  modBy model.pulsePeriod (floor (et)) == 0 then
                                         model.graphScale * (1 - e^(-et*toFloat(model.addition1)))
                                     else
                                         0
+
                         Type3 ->
                             case model.input of
                                 Step ->
@@ -210,13 +230,17 @@ update msg model =
                                         model.graphScale * sin(et*toFloat(model.addition1))
                                     else
                                         0
+
                                 Sine ->
+                                    -- Sine is unknown so we lock the value to zero
                                     0
+
                                 Pulse ->
                                     if  modBy model.pulsePeriod (floor (et)) == 0 then
                                         model.graphScale * sin(et*toFloat(model.addition1))
                                     else
                                         0
+
                 inputGraphPoint =
                     (0, inputGraph, black)
 
